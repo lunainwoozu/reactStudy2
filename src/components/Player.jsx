@@ -1,22 +1,33 @@
 import { useState } from "react"
 
-export default function Player({name, symbol}) {
+export default function Player({initialName, symbol, isActive, onChangeName}) {
+  const [playerName, setPlayerName] = useState(initialName);
   const [isEditing, setIsEditing] = useState(false);
   
   function handleEditName(){
-    setIsEditing(!isEditing);
+    setIsEditing(editing => !editing);
+
+    if (isEditing){
+      onChangeName(symbol, playerName);
+      console.log(symbol, playerName)
+    }
   }
 
-  let playerName = <span className='player-name'>{name}</span>;
+  function handleChange(e){
+    setPlayerName(e.target.value) // 이벤트가 일어나는 input의 값
+  }
+
+  let nameTag = <span className='player-name'>{playerName}</span>;
 
   if (isEditing) {
-    playerName = <input type='text' placeholder='name' required />;
+    nameTag = <input type='text' placeholder='name'
+                value={playerName} onChange={handleChange} required />;
   }
 
   return(
-    <li>
+    <li className={isActive ? 'active' : undefined}>
       <span className="player">
-        {playerName}
+        {nameTag}
         <span className="player-symbol">{symbol}</span>
       </span>
       <button onClick={handleEditName}>
